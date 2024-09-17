@@ -15,7 +15,6 @@ const authenticate = async (req, res) => {
 
     // Check if the password is correct
     const passwordMatch = await bcrypt.compare(password, user.password);
-
     if (!passwordMatch) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
@@ -46,13 +45,10 @@ const register = async (req, res) => {
   try {
     const { username, password, accessKey, keyId } = req.body;
 
-    // Hash the password before saving it to the database
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     // Create the user
     const user = await User.create({
       username,
-      password: hashedPassword,
+      password,
       accessKey,
       keyId,
     });

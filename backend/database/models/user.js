@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config");
 const bcrypt = require("bcrypt");
-
+const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS, 10) || 10;
 const User = sequelize.define(
   "User",
   {
@@ -32,12 +32,12 @@ const User = sequelize.define(
     hooks: {
       beforeCreate: async (user) => {
         if (user.password) {
-          user.password = await bcrypt.hash(user.password, 10);
+          user.password = await bcrypt.hash(user.password, SALT_ROUNDS);
         }
       },
       beforeUpdate: async (user) => {
         if (user.password) {
-          user.password = await bcrypt.hash(user.password, 10);
+          user.password = await bcrypt.hash(user.password, SALT_ROUNDS);
         }
       },
     },

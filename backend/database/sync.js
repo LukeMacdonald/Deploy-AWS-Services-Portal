@@ -7,7 +7,7 @@ const sync = async () => {
     console.log("Connection has been established successfully.");
 
     // Sync the database schema
-    await sequelize.sync({ force: true }); // Use { alter: true } if you want to update tables without dropping
+    await sequelize.sync({ alter: true });
     console.log("Database & tables created!");
   } catch (error) {
     console.error("Error syncing with the database:", error);
