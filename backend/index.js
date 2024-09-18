@@ -1,17 +1,22 @@
 const express = require("express");
-const cookieParser = require("cookie-parser"); // For parsing cookies
+const cookieParser = require("cookie-parser");
 const YAML = require("yamljs");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = YAML.load("./swagger.yaml");
-const morgan = require("morgan"); // For HTTP request logging
+const morgan = require("morgan");
+const helmet = require("helmet");
+const dotenv = require("dotenv");
 
-require("dotenv").config();
+dotenv.config();
 
 const sync = require("./database/sync");
 const authenticateToken = require("./middleware/jwt.js");
-const attachAWS = require("./config/aws.js");
 
 const PORT = process.env.PORT || 3005;
+
+if (!process.env.PORT) {
+  throw new Error("PORT environment variable is required");
+}
 
 const app = express();
 
@@ -28,9 +33,10 @@ app.use("/auth", require("./routes/auth.js"));
 
 // Protected routes should be after authentication middleware
 app.use(authenticateToken);
-app.use(attachAWS);
-// EC2 routes
-app.use("/ec2", require("./routes/instances.js"));
+
+// Cloud provider routes
+app.use("/aws", require("./routes/aws.js"));
+app.use("/azure", require("./routes/azure.js"));
 
 // Centralized error handling middleware
 app.use((err, req, res, next) => {
@@ -46,6 +52,7 @@ app.use((err, req, res, next) => {
       console.log(`App running on port ${PORT}`);
     });
   } catch (error) {
-    console.error("Error starting the server:", error);
+    console.error("Failed to sync database:", error);
+    process.exit(1); // Exit process with failure
   }
 })();

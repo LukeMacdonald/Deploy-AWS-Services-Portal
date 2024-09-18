@@ -1,13 +1,13 @@
 const bcrypt = require("bcrypt"); // For password hashing and comparison
 const jwt = require("jsonwebtoken"); // For generating JSON Web Tokens
-const User = require("../database/models/user");
-
+const { findByUsername } = require("../database/queries/users");
+const { User } = require("../database/associations");
 const authenticate = async (req, res) => {
   try {
     const { username, password } = req.body;
 
     // Find the user by username
-    const user = await User.findOne({ where: { username } });
+    const user = await findByUsername(username);
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });

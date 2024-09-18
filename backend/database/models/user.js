@@ -19,14 +19,6 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    accessKey: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    keyId: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
   },
   {
     hooks: {

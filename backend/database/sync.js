@@ -1,5 +1,6 @@
 const sequelize = require("./config"); // Import the Sequelize instance
-const User = require("./models/user");
+
+const { User, AWS_Account, Azure_Account } = require("./associations"); // Import the models and associations
 const sync = async () => {
   try {
     // Authenticate the connection
